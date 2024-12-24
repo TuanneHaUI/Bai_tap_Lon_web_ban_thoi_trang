@@ -1,0 +1,58 @@
+package model;
+
+import java.util.Date;
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+public class Email {
+    // Email: tungletest1.email@gmail.com
+    // Password: nebeekfipcstxcox (App Password)
+    static final String from = "tuanne2542004@gmail.com";
+    static final String password = "eogj pvxl orej heju";
+
+    public static boolean sendEmail(String to, String tieuDe, String noiDung) {
+        // Khai báo các thuộc tính
+    	 final String from = "your_email@gmail.com"; // Thay bằng email của bạn
+         final String password = "your_app_password"; // App Password của Gmail
+
+         // Cấu hình server SMTP
+         Properties props = new Properties();
+         props.put("mail.smtp.host", "smtp.gmail.com");
+         props.put("mail.smtp.port", "587"); // Port TLS
+         props.put("mail.smtp.auth", "true");
+         props.put("mail.smtp.starttls.enable", "true");
+
+         // Tạo phiên làm việc
+         Session session = Session.getInstance(props, new Authenticator() {
+             @Override
+             protected PasswordAuthentication getPasswordAuthentication() {
+                 return new PasswordAuthentication(from, password);
+             }
+         });
+
+         try {
+             // Tạo email
+             Message message = new MimeMessage(session);
+             message.setFrom(new InternetAddress(from));
+             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+             message.setSubject(subject);
+             message.setText(body); // Nội dung email (văn bản thuần)
+
+             // Gửi email
+             Transport.send(message);
+             System.out.println("Email đã được gửi thành công!");
+             return true;
+         } catch (MessagingException e) {
+             e.printStackTrace();
+             System.out.println("Gửi email thất bại!");
+             return false;
+         }
+     }
+}

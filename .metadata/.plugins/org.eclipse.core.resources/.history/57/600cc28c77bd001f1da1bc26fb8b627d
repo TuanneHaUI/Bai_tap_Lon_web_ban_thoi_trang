@@ -1,0 +1,51 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+ * Servlet implementation class Xacnhangiohang
+ */
+@WebServlet("/Xacnhangiohang")
+public class Xacnhangiohang extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Xacnhangiohang() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String huy = request.getParameter("Huy");
+		String datHang = request.getParameter("Dathang");
+		String gia = request.getParameter("gia");
+		String tenSanPham = request.getParameter("Tensanpham");
+		
+		System.out.println("=== LOG THÔNG TIN REQUEST ===");
+		System.out.println("Hủy: " + huy);
+		System.out.println("Đặt Hàng: " + datHang);
+		System.out.println("Giá: " + gia);
+		System.out.println("Tên Sản Phẩm: " + tenSanPham);
+		System.out.println("=============================");
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

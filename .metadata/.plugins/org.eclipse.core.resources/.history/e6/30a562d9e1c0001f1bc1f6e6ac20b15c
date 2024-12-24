@@ -1,0 +1,44 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import model.Email;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet("/Emailweb")
+public class Emailweb extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    public Emailweb() {
+        super();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Lấy dữ liệu từ form
+        String email = request.getParameter("email");
+        String message = request.getParameter("msg");
+        String subject = "Tin nhắn từ khách hàng";
+
+        System.out.println("Email nhận: " + email);
+        System.out.println("Nội dung: " + message);
+
+        // Gửi email
+        boolean isSent = Email.sendEmail(email, subject, message);
+
+        // Phản hồi tới trình duyệt
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        if (isSent) {
+            request.setAttribute("guimailthanhcong", "thanhcong");
+        } else {
+        	 request.setAttribute("guimailthatbai", "thất bại");
+        }
+    }
+}

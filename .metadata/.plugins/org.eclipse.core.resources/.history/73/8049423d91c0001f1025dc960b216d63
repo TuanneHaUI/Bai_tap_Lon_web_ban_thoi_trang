@@ -1,0 +1,80 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import model.DonHang;
+import model.SanPham;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import Reponsitory.LaydulieuReponsitory;
+import Reponsitory.Laydulieuchonguoidung;
+
+@WebServlet("/Bieudodoanhthu")
+public class Bieudo extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private Laydulieuchonguoidung lgn = new Laydulieuchonguoidung();
+    private LaydulieuReponsitory lg = new LaydulieuReponsitory();
+
+    public Bieudo() {
+        super();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("đã chạy vô servlet chơi");
+
+        List<DonHang> donHangList = lgn.LayThongTinDonHang();
+        System.out.println("Danh sách đơn hàng: " + donHangList); // Debug danh sách đơn hàng
+
+        if (donHangList == null || donHangList.isEmpty()) {
+            request.setAttribute("doanhThuMap", null); // Gán null nếu không có dữ liệu
+        } else {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat monthFormat = new SimpleDateFormat("yyyy-MM");
+
+                // Tạo map từ danh sách, nhóm theo tháng
+                Map<String, Double> doanhThuMap = donHangList.stream()
+                    .filter(dh -> dh.getNgayDatHang() != null) // Loại bỏ null
+                    .filter(dh -> "Hoàn thành".equalsIgnoreCase(dh.getTrangThai())) // Chỉ lấy đơn hàng hoàn thành
+                    .collect(Collectors.groupingBy(
+                        dh -> {
+                            try {
+                                Date date = inputFormat.parse(dh.getNgayDatHang());
+                                return monthFormat.format(date); // Định dạng theo tháng
+                            } catch (ParseException e) {
+                                System.err.println("Lỗi định dạng ngày: " + dh.getNgayDatHang());
+                                return "Không xác định"; // Gán nhãn mặc định nếu lỗi
+                            }
+                        },
+                        Collectors.summingDouble(dh -> dh.getSoLuong() * dh.getGia()) // Tính tổng doanh thu
+                    ));
+
+                System.out.println("Doanh thu theo tháng: " + doanhThuMap);
+                request.setAttribute("doanhThuMap", doanhThuMap);
+
+            } catch (Exception e) {
+                System.err.println("Lỗi khi xử lý doanh thu: " + e.getMessage());
+            }
+        }
+
+        // Thống kê số lượng hàng bán chạy nhất theo thứ tự từ lớn đến nhỏ
+        List<SanPham> listSanPham = lg.SanPhamDuocBanChayNhat();
+        request.setAttribute("soLuongHangBanChay", listSanPham);
+
+        request.getRequestDispatcher("bieudo.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+}

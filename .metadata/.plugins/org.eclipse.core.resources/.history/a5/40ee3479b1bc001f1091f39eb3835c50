@@ -1,0 +1,48 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import model.DonHang;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import Reponsitory.Laydulieuchonguoidung;
+
+@WebServlet("/Bieudodoanhthu")
+public class Bieudodoanhthu extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private Laydulieuchonguoidung lgn = new Laydulieuchonguoidung();
+
+    public Bieudodoanhthu() {
+        super();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Lấy danh sách đơn hàng
+        List<DonHang> donHangList = lgn.LayThongTinDonHang();
+
+        // Tính doanh thu theo ngày
+        Map<String, Double> doanhThuMap = donHangList.stream()
+                .collect(Collectors.groupingBy(
+                        DonHang::getNgayDatHang, // Nhóm theo ngày đặt hàng
+                        Collectors.summingDouble(dh -> dh.getSoLuong() * dh.getGia()) // Tính tổng doanh thu
+                ));
+
+        // Truyền dữ liệu vào request để JSP sử dụng
+        request.setAttribute("bieuDoDoanhThu", doanhThuMap);
+
+        // Chuyển tiếp sang JSP
+        request.getRequestDispatcher("donhang.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
+}

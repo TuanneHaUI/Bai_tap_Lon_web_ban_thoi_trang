@@ -1,0 +1,5 @@
+127.0.0.1 - - [20/Dec/2019:00:43:14 +0700] "GET / HTTP/1.1" 404 755
+0:0:0:0:0:0:0:1 - - [20/Dec/2019:00:43:14 +0700] "GET /webbanquanao/Laydulieusanpham HTTP/1.1" 200 29209
+0:0:0:0:0:0:0:1 - - [20/Dec/2019:00:43:33 +0700] "GET /webbanquanao/Laydulieusanpham HTTP/1.1" 200 29209
+0:0:0:0:0:0:0:1 - - [20/Dec/2019:00:43:38 +0700] "GET /webbanquanao/Cuahang HTTP/1.1" 200 25571
+0:0:0:0:0:0:0:1 - - [20/Dec/2019:00:43:40 +0700] "GET /webbanquanao/Laydulieusanpham HTTP/1.1" 200 29209

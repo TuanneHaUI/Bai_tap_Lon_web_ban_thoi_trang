@@ -1,0 +1,120 @@
+<%@page import="model.Danhgia"%>
+<%@page import="java.util.List"%>
+<%@page import="Reponsitory.Laydulieuchonguoidung"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đánh giá Sản phẩm</title>
+    <style>
+        /* CSS đã có, không thay đổi */
+        .feedback-container {
+            margin-top: 10px;
+            display: none;
+        }
+        .feedback-button {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .feedback-button:hover {
+            background-color: #0b7dda;
+        }
+        .feedback-textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .submit-feedback {
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-feedback:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Quản Lý Đánh Giá Sản Phẩm</h2>
+
+    <table id="reviewsTable">
+        <thead>
+            <tr>
+                <th>Mã Tài Khoản</th>
+                <th>Tên Tài Khoản</th>
+                <th>Mã Sản Phẩm</th>
+                <th>Đánh Giá (Sao)</th>
+                <th>Nội Dung Bài Viết</th>
+                <th>Phản Hồi</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+        <%
+        Laydulieuchonguoidung lgn = new Laydulieuchonguoidung();
+        List<Danhgia> danhGia = lgn.LayThongTinDanhGia();
+        for(Danhgia d : danhGia){
+        	int i = 0;
+        %>
+            <tr>
+                <td><%=d.getMaNguoiDung() %></td>
+                <td><%=d.getTenNguoiDung() %></td>
+                <td><%=d.getMaSanPham() %></td>
+                <td>
+                    (<%=d.getSoSao() %> sao)<span class="star-rating">
+                    <%while(i < d.getSoSao()){ %>
+                    ★
+                    <%
+                    i = i+1;
+                    } 
+                    %>
+                    </span>
+                </td>
+                <td><%=d.getNoiDung() %></td>
+                <td>
+                    <!-- Form phản hồi -->
+                    <form action="PhanHoiServlet" method="post">
+                        <button type="button" class="feedback-button" onclick="toggleFeedback(<%=d.getMaDanhGia()%>)">Phản hồi</button>
+                        
+                        <!-- Phản hồi container -->
+                        <div class="feedback-container" id="feedback-<%=d.getMaDanhGia()%>">
+                            <input type="hidden" name="idDanhGia" value="<%=d.getMaDanhGia()%>">
+                            <textarea class="feedback-textarea" name="phanHoi" placeholder="Nhập phản hồi của bạn..."></textarea>
+                            <button type="submit" class="submit-feedback">Gửi Phản Hồi</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        <%} %>
+          
+        </tbody>
+    </table>
+
+    <script>
+        // Hàm toggle để hiển thị và ẩn phản hồi
+        function toggleFeedback(id) {
+            var feedbackContainer = document.getElementById('feedback-' + id);
+            if (feedbackContainer.style.display === "none" || feedbackContainer.style.display === "") {
+                feedbackContainer.style.display = "block";
+            } else {
+                feedbackContainer.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

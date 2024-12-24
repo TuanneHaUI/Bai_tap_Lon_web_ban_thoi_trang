@@ -1,0 +1,59 @@
+package controller;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.DonHang;
+import model.User;
+
+import java.io.IOException;
+import java.util.List;
+
+import Reponsitory.Laydulieuchonguoidung;
+
+/**
+ * Servlet implementation class Danhgiasanpham
+ */
+@WebServlet("/Danhgiasanpham")
+public class Danhgiasanpham extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+      private Laydulieuchonguoidung lgn = new Laydulieuchonguoidung();
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Danhgiasanpham() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String soSao = request.getParameter("soSao");
+		String noiDungDanhGia = request.getParameter("noiDungDanhGia");
+		String idSanPham = request.getParameter("idSanPham");
+		List<DonHang> listDonHang = lgn.LayThongTinDonHang();
+		HttpSession s = request.getSession(false);
+		List<User> listUser = (List<User>) s.getAttribute("Ghinhotaikhoan");
+		if(listUser != null) {
+			int id = listUser.get(0).getMaTaiKhoan();
+			
+		}else {
+			response.sendRedirect("login.jsp");
+		}
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
